@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Konfiguracja płaskiego układu współrzędnych dla mapy GTA V
+    // 1. Płaski układ współrzędnych dla mapy GTA V
     const mapExtent = [0.00000000, -8192.00000000, 8192.00000000, 0.00000000];
     const mapMinZoom = 2;
     const mapMaxZoom = 5;
@@ -23,18 +23,18 @@ document.addEventListener("DOMContentLoaded", () => {
         attributionControl: false
     });
 
-    // 3. Wczytanie kafelków mapy GTA V Atlas
-    L.tileLayer('https://gta-5-map.com/tiles/{z}/{x}/{y}.png', {
+    // 3. Wczytanie działających kafelków mapy GTA V (Atlas)
+    L.tileLayer('https://map.bramstein.com/tiles/atlas/{z}/{x}/{y}.png', {
         minZoom: mapMinZoom,
         maxZoom: mapMaxZoom,
         noWrap: true,
-        tms: false
+        tms: true
     }).addTo(map);
 
-    // Ustawienie widoku początkowego na środek Los Santos
+    // Wyśrodkowanie na Los Santos
     map.setView([-4000, 4000], 3);
 
-    // 4. Przykładowe Blipy
+    // 4. Blipy
     const blips = [
         { name: "Siedziba Główna", coords: [-5500, 3800], desc: "Baza operacyjna" },
         { name: "Lotnisko Los Santos", coords: [-7000, 3000], desc: "Pas startowy" },
@@ -43,13 +43,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const blipListContainer = document.getElementById('sidebarBlipsList');
 
-    // Dodawanie blipów na mapę i do listy
     blips.forEach(blip => {
-        // Marker na mapie
         const marker = L.marker(blip.coords).addTo(map);
         marker.bindPopup(`<b>${blip.name}</b><br>${blip.desc}`);
 
-        // Element w panelu bocznym
         const li = document.createElement('li');
         li.textContent = `📍 ${blip.name}`;
         li.addEventListener('click', () => {
@@ -59,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
         blipListContainer.appendChild(li);
     });
 
-    // Wyszukiwarka blipów
+    // Wyszukiwarka
     const searchInput = document.getElementById('blipSearchInput');
     searchInput.addEventListener('input', (e) => {
         const value = e.target.value.toLowerCase();

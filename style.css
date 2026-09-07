@@ -23,18 +23,18 @@ body, html {
     position: absolute;
     top: 20px;
     left: 20px;
-    width: 120px;
+    width: 100px;
     opacity: 0.6;
     pointer-events: none;
     z-index: 999;
 }
 
-/* Szklany panel boczny w stylu interfejsu z obrazka */
+/* Panel Boczny */
 #sidebarPanel {
     position: absolute;
     top: 20px;
     right: 20px;
-    width: 310px;
+    width: 300px;
     max-height: calc(100vh - 40px);
     background: rgba(11, 23, 31, 0.92);
     border: 1px solid rgba(100, 140, 160, 0.25);
@@ -48,9 +48,8 @@ body, html {
     overflow-y: auto;
 }
 
-/* Nagłówek */
 .sidebar-header h3 {
-    font-size: 13px;
+    font-size: 12px;
     font-family: 'Cinzel', serif;
     letter-spacing: 2px;
     color: #b89b5e;
@@ -61,10 +60,10 @@ body, html {
 
 .npc-btn {
     width: 100%;
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #8a9ea8;
-    padding: 6px;
+    padding: 8px;
     border-radius: 6px;
     cursor: pointer;
     font-size: 11px;
@@ -73,40 +72,22 @@ body, html {
 }
 
 .npc-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.1);
     color: #fff;
 }
 
 #blipSearchInput {
     width: 100%;
-    padding: 9px 12px;
+    padding: 8px 12px;
     background: rgba(5, 12, 17, 0.85);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 6px;
     color: #fff;
     font-size: 11px;
-    margin-bottom: 8px;
-}
-
-#blipSearchInput:focus {
-    outline: none;
-    border-color: rgba(184, 155, 94, 0.5);
-}
-
-.filter-btn {
-    width: 100%;
-    background: rgba(16, 30, 40, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    color: #5d7585;
-    padding: 7px;
-    border-radius: 6px;
-    font-size: 10px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
     margin-bottom: 12px;
 }
 
-/* Lista kafelków kategorii z nawigacją strzałkami */
+/* Kafelki kategorii */
 .categories-list {
     display: flex;
     flex-direction: column;
@@ -132,16 +113,22 @@ body, html {
 .category-info {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     cursor: pointer;
     flex-grow: 1;
 }
 
-.category-icon-img {
-    width: 18px;
-    height: 18px;
-    object-fit: contain;
-    filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.8));
+.category-icon-box {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.category-icon-box svg {
+    width: 20px;
+    height: 20px;
 }
 
 .category-name-group {
@@ -174,7 +161,6 @@ body, html {
     padding: 0 4px;
     color: #435b6c;
     user-select: none;
-    transition: color 0.2s;
 }
 
 .nav-arrow:hover {
@@ -185,20 +171,22 @@ body, html {
     opacity: 0.35;
 }
 
-/* Wygląd pojedynczego blipa umieszczonego bezpośrednio na mapie */
+/* Ikona na mapie */
 .clean-gta-blip {
     background: none;
     border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.clean-gta-blip img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.9));
+.clean-gta-blip svg {
+    width: 24px;
+    height: 24px;
+    filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.9));
 }
 
-/* Podstawowa lista pod spodem (gdy szukasz tekstowo) */
+/* Lista podglądu admina */
 .sidebar-list {
     list-style: none;
     margin-top: 10px;
@@ -215,7 +203,7 @@ body, html {
     color: #8da4b5;
 }
 
-/* Stopka dolna */
+/* Stopka */
 #footer {
     position: absolute;
     bottom: 12px;
@@ -228,14 +216,11 @@ body, html {
     font-size: 10px;
     color: #6a8292;
     z-index: 1000;
-    backdrop-filter: blur(5px);
 }
 
-#footer span {
-    color: #b89b5e;
-}
+#footer span { color: #b89b5e; }
 
-/* Okno modalne edycji i dodawania */
+/* Okno Modalne */
 #modalOverlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -248,14 +233,13 @@ body, html {
     position: fixed;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 320px;
+    width: 300px;
     background: #0d171e;
     border: 1px solid #233745;
     border-radius: 8px;
     padding: 20px;
     display: none;
     z-index: 2001;
-    box-shadow: 0 0 30px #000;
 }
 
 #blipModal h2 {
@@ -265,9 +249,7 @@ body, html {
     margin-bottom: 12px;
 }
 
-.input-group {
-    margin-bottom: 10px;
-}
+.input-group { margin-bottom: 10px; }
 
 .input-group input, .input-group select, .input-group textarea {
     width: 100%;
@@ -296,24 +278,3 @@ body, html {
 
 #saveBlipBtn { background: #276b3c; color: #fff; }
 #cancelBlipBtn { background: #8c2525; color: #fff; }
-
-/* Wymuszenie widoczności obrazków na mapie i w panelu */
-.category-icon-img {
-    width: 24px !important;
-    height: 24px !important;
-    object-fit: contain;
-    display: inline-block;
-}
-
-.clean-gta-blip img {
-    width: 24px !important;
-    height: 24px !important;
-    object-fit: contain;
-    display: block;
-}
-
-.clean-gta-blip {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}

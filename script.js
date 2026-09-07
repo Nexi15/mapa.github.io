@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     // 1. Wymiary Twojej grafiki mapy (1024x1024 pikseli)
-    const mapBounds = [[0, 0], [1024, 1024]];
+    const mapBounds = [[0, 0], [8192, 8192]];
 
     // 2. Inicjalizacja prostej mapy graficznej
     const map = L.map('map', {

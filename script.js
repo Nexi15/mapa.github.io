@@ -4,18 +4,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const FIREBASE_URL = "https://mapa-59c13-default-rtdb.europe-west1.firebasedatabase.app/blips";
 
-    // Konfiguracja ikon i opisów pod kategorię
+    // Konfiguracja kategorii ze wskazaniem na Twoje grafiki PNG
     const CATEGORIES = {
-        flara:    { name: "Flara", sub: "Flara", icon: "fa-solid fa-box", visible: true, currentIndex: 0 },
-        npc:      { name: "NPC", sub: "NPC", icon: "fa-solid fa-user-ninja", visible: true, currentIndex: 0 },
-        corner:   { name: "Corner", sub: "Corner", icon: "fa-solid fa-cannabis", visible: true, currentIndex: 0 },
-        stol:     { name: "Stół", sub: "Stół do wytwarzania...", icon: "fa-solid fa-wrench", visible: true, currentIndex: 0 },
-        grzyby:   { name: "Grzyby", sub: "Grzyby", icon: "fa-solid fa-wheat-awn", visible: true, currentIndex: 0 },
-        drug:     { name: "Drug Delivery", sub: "Drug Delivery Sandy...", icon: "fa-solid fa-car", visible: true, currentIndex: 0 },
-        napad:    { name: "Napad", sub: "Napad na ammunat...", icon: "fa-solid fa-dollar-sign", visible: true, currentIndex: 0 },
-        weed:     { name: "Weedshop", sub: "Sklep z konopiami", icon: "fa-solid fa-store", visible: true, currentIndex: 0 },
-        kopalnia: { name: "Kopalnia", sub: "Punkt wydobycia", icon: "fa-solid fa-person-digging", visible: true, currentIndex: 0 },
-        rabunek:  { name: "Rabunek kasetki", sub: "Kasetka sklepowa", icon: "fa-solid fa-basket-shopping", visible: true, currentIndex: 0 }
+        wrak:       { name: "Wrak", sub: "Wrak pojazdu", icon: "wrak.png", visible: true, currentIndex: 0 },
+        flara:      { name: "Flara", sub: "Flara", icon: "flara.png", visible: true, currentIndex: 0 },
+        npc:        { name: "NPC", sub: "NPC", icon: "npc.png", visible: true, currentIndex: 0 },
+        corner:     { name: "Corner", sub: "Corner", icon: "corner.png", visible: true, currentIndex: 0 },
+        stol:       { name: "Stół", sub: "Stół do wytwarzania...", icon: "stol.png", visible: true, currentIndex: 0 },
+        grzyby:     { name: "Grzyby", sub: "Grzyby", icon: "grzyby.png", visible: true, currentIndex: 0 },
+        taxidriver: { name: "Drug Delivery", sub: "Drug Delivery Sandy...", icon: "taxidriver.png", visible: true, currentIndex: 0 },
+        napad:      { name: "Napad", sub: "Napad na ammunat...", icon: "napad.png", visible: true, currentIndex: 0 },
+        weed:       { name: "Weedshop", sub: "Sklep z ziołem", icon: "weed.png", visible: true, currentIndex: 0 },
+        kopalnia:   { name: "Kopalnia", sub: "Punkt wydobycia", icon: "kopalnia.png", visible: true, currentIndex: 0 },
+        rabunek:    { name: "Rabunek kasetki", sub: "Kasetka sklepowa", icon: "rabunek.png", visible: true, currentIndex: 0 }
     };
 
     const mapBounds = [[0, 0], [8192, 8192]];
@@ -50,14 +51,14 @@ document.addEventListener("DOMContentLoaded", () => {
     let editingBlipData = null;
     let allBlips = [];
 
-    // Czarno-białe ikony wektorowe
+    // Funkcja generująca czysty znacznik Leaflet z pliku PNG
     function createGtaMarkerIcon(categoryKey) {
-        const cat = CATEGORIES[categoryKey] || { icon: "fa-solid fa-location-dot" };
+        const cat = CATEGORIES[categoryKey] || { icon: "flara.png" };
         return L.divIcon({
-            className: 'custom-gta-pin',
-            html: `<div class="gta-marker-pin"><i class="${cat.icon}"></i></div>`,
-            iconSize: [28, 28],
-            iconAnchor: [14, 14]
+            className: 'clean-gta-blip',
+            html: `<img src="${cat.icon}" alt="blip" onerror="this.src='flara.png';" />`,
+            iconSize: [24, 24],
+            iconAnchor: [12, 12]
         });
     }
 
@@ -77,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     const marker = L.marker(item.coords, { icon: createGtaMarkerIcon(catKey) });
                     const catInfo = CATEGORIES[catKey] || CATEGORIES.flara;
                     
-                    marker.bindPopup(`<b><i class="${catInfo.icon}"></i> ${item.name}</b><br><i>${catInfo.name}</i><br><br>${item.desc || 'Brak opisu'}`);
+                    marker.bindPopup(`<b>${item.name}</b><br><i>${catInfo.name}</i><br><br>${item.desc || 'Brak opisu'}`);
                     
                     allBlips.push({ id, name: item.name, category: catKey, desc: item.desc, coords: item.coords, marker });
                 });
@@ -85,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
             renderCategories();
             renderBlipList();
         } catch (err) {
-            console.error("Błąd wczytywania danych:", err);
+            console.error("Błąd wczytywania danych z Firebase:", err);
         }
     }
 
@@ -112,6 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
         loadBlipsFromFirebase();
     }
 
+    // Logowanie Admina
     adminLoginBtn.addEventListener('click', () => {
         if (isAdmin) {
             isAdmin = false;
@@ -130,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Nawigacja po pozycjach kafelków
+    // Przełączanie pozycji po kliknięciu strzałki < lub >
     function navigateCategoryBlip(catKey, direction) {
         const catBlips = allBlips.filter(b => b.category === catKey);
         if (catBlips.length === 0) return;
@@ -150,21 +152,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const targetBlip = catBlips[cat.currentIndex];
         if (targetBlip) {
-            map.flyTo(targetBlip.coords, 1, { duration: 1 });
+            map.flyTo(targetBlip.coords, 1, { duration: 0.8 });
             targetBlip.marker.openPopup();
         }
 
         renderCategories();
     }
 
+    // Generator interfejsu kafelków
     function renderCategories() {
+        if (!categoriesContainer) return;
         categoriesContainer.innerHTML = '';
 
         Object.keys(CATEGORIES).forEach(key => {
             const cat = CATEGORIES[key];
             const catBlips = allBlips.filter(b => b.category === key);
             const totalCount = catBlips.length;
-
             const displayIndex = totalCount > 0 ? (cat.currentIndex % totalCount) + 1 : 0;
 
             const row = document.createElement('div');
@@ -172,7 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
             
             row.innerHTML = `
                 <div class="category-info">
-                    <span class="category-icon"><i class="${cat.icon}"></i></span>
+                    <img src="${cat.icon}" class="category-icon-img" alt="${cat.name}" onerror="this.style.display='none';">
                     <div class="category-name-group">
                         <span class="category-title">${cat.name}</span>
                         <span class="category-subtitle">${cat.sub}</span>
@@ -206,6 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function renderBlipList() {
+        if (!blipListContainer) return;
         blipListContainer.innerHTML = '';
 
         allBlips.forEach(blip => {
@@ -218,24 +222,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            const li = document.createElement('li');
-            li.style.display = 'flex';
-            li.style.justify = 'space-between';
-            li.style.alignItems = 'center';
-
-            const nameSpan = document.createElement('span');
-            nameSpan.innerHTML = `<i class="${cat.icon}"></i> ${blip.name}`;
-            nameSpan.style.cursor = 'pointer';
-            nameSpan.addEventListener('click', () => {
-                map.flyTo(blip.coords, 1);
-                blip.marker.openPopup();
-            });
-
-            li.appendChild(nameSpan);
-
+            // Opcje panelu admina (edycja / usuwanie na liście poniżej)
             if (isAdmin) {
+                const li = document.createElement('li');
+                li.style.display = 'flex';
+                li.style.justify = 'space-between';
+                li.style.alignItems = 'center';
+
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = blip.name;
+                nameSpan.style.cursor = 'pointer';
+                nameSpan.addEventListener('click', () => {
+                    map.flyTo(blip.coords, 1);
+                    blip.marker.openPopup();
+                });
+
                 const actionContainer = document.createElement('div');
-                
                 const editBtn = document.createElement('button');
                 editBtn.textContent = '✏️';
                 editBtn.style.cssText = 'background:none; border:none; cursor:pointer; margin-right:5px;';
@@ -256,23 +258,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 actionContainer.appendChild(editBtn);
                 actionContainer.appendChild(deleteBtn);
+                li.appendChild(nameSpan);
                 li.appendChild(actionContainer);
+                blipListContainer.appendChild(li);
             }
-
-            blipListContainer.appendChild(li);
         });
     }
 
-    loadBlipsFromFirebase();
-
-    // Dodawanie punktu
+    // Modal dodawania / edycji
     map.on('click', (e) => {
+        if (!isAdmin) return; // Tylko zalogowany admin dodaje kliknięciem
         clickedCoords = [e.latlng.lat, e.latlng.lng];
         editingBlipData = null;
 
         modalTitle.textContent = "Nowy punkt";
         blipTitleInput.value = '';
-        blipCategorySelect.value = 'flara';
+        blipCategorySelect.value = 'wrak';
         blipDescInput.value = '';
 
         modalOverlay.style.display = 'block';
@@ -319,15 +320,18 @@ document.addEventListener("DOMContentLoaded", () => {
         closeModal();
     });
 
+    // Wyszukiwarka
     const searchInput = document.getElementById('blipSearchInput');
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
             const value = e.target.value.toLowerCase();
-            const items = blipListContainer.querySelectorAll('li');
-            items.forEach(item => {
-                const text = item.textContent.toLowerCase();
-                item.style.display = text.includes(value) ? 'flex' : 'none';
+            const rows = categoriesContainer.querySelectorAll('.category-row');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(value) ? 'flex' : 'none';
             });
         });
     }
+
+    loadBlipsFromFirebase();
 });

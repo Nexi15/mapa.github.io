@@ -32,10 +32,33 @@ document.addEventListener("DOMContentLoaded", () => {
     const modalTitle = document.getElementById('modalTitle');
 
     let clickedCoords = null;
-    let editingBlipData = null; // Przechowuje dane edytowanego blipa
-    const allBlips = [];
+    let editingBlipData = null; 
+    let allBlips = [];
 
-    // 4. Obsługa Logowania Admina
+    // 4. ZAPISYWANIE I WCZYTYWANIE Z LOCALSTORAGE
+    function saveBlipsToStorage() {
+        const blipsToSave = allBlips.map(b => ({
+            name: b.name,
+            desc: b.desc,
+            coords: b.coords
+        }));
+        localStorage.setItem('lostmc_blips', JSON.stringify(blipsToSave));
+    }
+
+    function loadBlipsFromStorage() {
+        const savedData = localStorage.getItem('lostmc_blips');
+        if (savedData) {
+            const parsedBlips = JSON.parse(savedData);
+            parsedBlips.forEach(b => {
+                createOrUpdateBlip(b.name, b.desc, b.coords, null, false);
+            });
+        } else {
+            // Jeśli baza jest pusta, utwórz domyślny punkt początkowy
+            createOrUpdateBlip("Siedziba Główna", "Baza operacyjna The Lost MC", [4096, 4096], null, true);
+        }
+    }
+
+    // 5. Obsługa Logowania Admina
     adminLoginBtn.addEventListener('click', () => {
         if (isAdmin) {
             isAdmin = false;
@@ -58,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // 5. Funkcja renderowania listy w panelu
+    // 6. Funkcja renderowania listy w panelu
     function renderBlipList() {
         blipListContainer.innerHTML = '';
 
@@ -100,6 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (confirm(`Czy na pewno chcesz usunąć punkt "${blip.name}"?`)) {
                         map.removeLayer(blip.marker);
                         allBlips.splice(index, 1);
+                        saveBlipsToStorage();
                         renderBlipList();
                     }
                 });
@@ -113,8 +137,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 6. Funkcja dodawania/aktualizacji blipa
-    function createOrUpdateBlip(name, desc, coords, markerToUpdate = null) {
+    // 7. Funkcja dodawania/aktualizacji blipa
+    function createOrUpdateBlip(name, desc, coords, markerToUpdate = null, shouldSave = true) {
         if (markerToUpdate) {
             // Aktualizacja istniejącego
             markerToUpdate.bindPopup(`<b>${name}</b><br>${desc || 'Brak opisu'}`);
@@ -124,13 +148,17 @@ document.addEventListener("DOMContentLoaded", () => {
             marker.bindPopup(`<b>${name}</b><br>${desc || 'Brak opisu'}`);
             allBlips.push({ name, desc, coords, marker });
         }
+
+        if (shouldSave) {
+            saveBlipsToStorage();
+        }
         renderBlipList();
     }
 
-    // Domyślny blip na start (dostosowany do mapy 8192x8192)
-    createOrUpdateBlip("Siedziba Główna", "Baza operacyjna The Lost MC", [4096, 4096]);
+    // Wczytaj zapisane blipy przy uruchomieniu strony
+    loadBlipsFromStorage();
 
-    // 7. Otwieranie Modala dla NOWEGO punktu
+    // 8. Otwieranie Modala dla NOWEGO punktu
     map.on('click', (e) => {
         clickedCoords = [e.latlng.lat, e.latlng.lng];
         editingBlipData = null;
@@ -144,7 +172,7 @@ document.addEventListener("DOMContentLoaded", () => {
         blipTitleInput.focus();
     });
 
-    // 8. Otwieranie Modala dla EDYCJI punktu
+    // 9. Otwieranie Modala dla EDYCJI punktu
     function openEditModal(blip, index) {
         editingBlipData = { blip, index };
 
@@ -157,7 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
         blipTitleInput.focus();
     }
 
-    // 9. Zamykanie okna
+    // 10. Zamykanie okna
     function closeModal() {
         modalOverlay.style.display = 'none';
         blipModal.style.display = 'none';
@@ -168,7 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
     cancelBtn.addEventListener('click', closeModal);
     modalOverlay.addEventListener('click', closeModal);
 
-    // 10. Zapisywanie (Nowy lub Edycja)
+    // 11. Zapisywanie (Nowy lub Edycja)
     saveBtn.addEventListener('click', () => {
         const title = blipTitleInput.value.trim();
         const desc = blipDescInput.value.trim();
@@ -183,16 +211,16 @@ document.addEventListener("DOMContentLoaded", () => {
             const { blip } = editingBlipData;
             blip.name = title;
             blip.desc = desc;
-            createOrUpdateBlip(title, desc, blip.coords, blip.marker);
+            createOrUpdateBlip(title, desc, blip.coords, blip.marker, true);
         } else if (clickedCoords) {
             // Dodawanie nowego blipa
-            createOrUpdateBlip(title, desc, clickedCoords);
+            createOrUpdateBlip(title, desc, clickedCoords, null, true);
         }
 
         closeModal();
     });
 
-    // 11. Wyszukiwarka
+    // 12. Wyszukiwarka
     const searchInput = document.getElementById('blipSearchInput');
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {

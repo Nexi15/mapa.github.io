@@ -2,7 +2,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Montserrat', sans-serif;
 }
 
 body, html {
@@ -16,96 +16,117 @@ body, html {
 #map {
     width: 100%;
     height: 100vh;
-    background: #000;
+    background: #0e1a24;
 }
 
-#sidebar {
+#watermark {
     position: absolute;
-    top: 15px;
-    right: 15px;
-    width: 320px;
-    max-height: calc(100vh - 30px);
-    background: rgba(10, 20, 28, 0.94);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
+    top: 20px;
+    left: 20px;
+    width: 120px;
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 999;
+}
+
+/* Szklany panel boczny w stylu interfejsu z obrazka */
+#sidebarPanel {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 310px;
+    max-height: calc(100vh - 40px);
+    background: rgba(11, 23, 31, 0.92);
+    border: 1px solid rgba(100, 140, 160, 0.25);
+    border-radius: 12px;
     z-index: 1000;
-    padding: 15px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(8px);
     overflow-y: auto;
 }
 
-.sidebar-header h2 {
+/* Nagłówek */
+.sidebar-header h3 {
     font-size: 13px;
+    font-family: 'Cinzel', serif;
     letter-spacing: 2px;
-    color: #8da4b5;
+    color: #b89b5e;
     text-transform: uppercase;
-    margin-bottom: 10px;
     text-align: center;
+    margin-bottom: 10px;
 }
 
-.admin-btn {
+.npc-btn {
     width: 100%;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid #2e4352;
-    color: #8da4b5;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #8a9ea8;
     padding: 6px;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
     font-size: 11px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     transition: 0.2s;
 }
 
-.admin-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+.npc-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
     color: #fff;
 }
 
 #blipSearchInput {
     width: 100%;
-    padding: 8px 12px;
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid #1c2d38;
-    border-radius: 4px;
+    padding: 9px 12px;
+    background: rgba(5, 12, 17, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
     color: #fff;
-    font-size: 12px;
+    font-size: 11px;
+    margin-bottom: 8px;
+}
+
+#blipSearchInput:focus {
+    outline: none;
+    border-color: rgba(184, 155, 94, 0.5);
+}
+
+.filter-btn {
+    width: 100%;
+    background: rgba(16, 30, 40, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: #5d7585;
+    padding: 7px;
+    border-radius: 6px;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
     margin-bottom: 12px;
 }
 
-.filter-section-title, .sidebar-sub-title {
-    font-size: 10px;
-    letter-spacing: 1.5px;
-    color: #5b7385;
-    text-align: center;
-    margin: 8px 0;
-    text-transform: uppercase;
-}
-
-/* Kafelki kategorii w stylu interfejsu GTA V */
+/* Lista kafelków kategorii z nawigacją strzałkami */
 .categories-list {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    margin-bottom: 15px;
 }
 
 .category-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: rgba(16, 29, 38, 0.8);
-    padding: 10px 12px;
+    background: rgba(15, 28, 37, 0.6);
+    padding: 8px 10px;
     border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: all 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    transition: all 0.2s;
 }
 
 .category-row:hover {
-    background: rgba(24, 43, 56, 1);
-    border-color: rgba(255, 255, 255, 0.15);
+    background: rgba(23, 41, 54, 0.85);
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
 .category-info {
@@ -116,11 +137,11 @@ body, html {
     flex-grow: 1;
 }
 
-.category-icon {
-    font-size: 15px;
-    width: 22px;
-    text-align: center;
-    color: #ffffff;
+.category-icon-img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.8));
 }
 
 .category-name-group {
@@ -129,33 +150,29 @@ body, html {
 }
 
 .category-title {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
-    color: #e0e8ef;
+    color: #d2dee6;
 }
 
 .category-subtitle {
-    font-size: 10px;
-    color: #61788a;
+    font-size: 9px;
+    color: #51697a;
 }
 
-/* Przycisk ze strzałkami < 0/1 > */
 .category-toggle {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    color: #8da4b5;
+    gap: 4px;
+    font-size: 11px;
+    color: #51697a;
     font-family: monospace;
-    background: rgba(0, 0, 0, 0.3);
-    padding: 3px 8px;
-    border-radius: 4px;
 }
 
 .nav-arrow {
     cursor: pointer;
-    padding: 2px 4px;
-    color: #4a6578;
+    padding: 0 4px;
+    color: #435b6c;
     user-select: none;
     transition: color 0.2s;
 }
@@ -165,26 +182,60 @@ body, html {
 }
 
 .category-row.inactive {
-    opacity: 0.4;
+    opacity: 0.35;
 }
 
-/* Lista Punktów pod spodem */
-#sidebarBlipsList {
+/* Wygląd pojedynczego blipa umieszczonego bezpośrednio na mapie */
+.clean-gta-blip {
+    background: none;
+    border: none;
+}
+
+.clean-gta-blip img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.9));
+}
+
+/* Podstawowa lista pod spodem (gdy szukasz tekstowo) */
+.sidebar-list {
     list-style: none;
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
 
-#sidebarBlipsList li {
-    background: rgba(0, 0, 0, 0.3);
+.sidebar-list li {
+    background: rgba(0, 0, 0, 0.25);
     padding: 6px 10px;
     border-radius: 4px;
-    font-size: 12px;
-    color: #a0b2c0;
+    font-size: 11px;
+    color: #8da4b5;
 }
 
-/* Modal edycji/dodawania */
+/* Stopka dolna */
+#footer {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(10, 20, 26, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 10px;
+    color: #6a8292;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+#footer span {
+    color: #b89b5e;
+}
+
+/* Okno modalne edycji i dodawania */
 #modalOverlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -197,9 +248,9 @@ body, html {
     position: fixed;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 300px;
-    background: #0f1c24;
-    border: 1px solid #2e4352;
+    width: 320px;
+    background: #0d171e;
+    border: 1px solid #233745;
     border-radius: 8px;
     padding: 20px;
     display: none;
@@ -207,59 +258,41 @@ body, html {
     box-shadow: 0 0 30px #000;
 }
 
-#blipModal h3 {
-    margin-bottom: 15px;
-    color: #fff;
+#blipModal h2 {
     font-size: 14px;
+    color: #b89b5e;
+    font-family: 'Cinzel', serif;
+    margin-bottom: 12px;
 }
 
-#blipModal label {
-    font-size: 11px;
-    color: #7a93a6;
-    display: block;
-    margin-top: 8px;
+.input-group {
+    margin-bottom: 10px;
 }
 
-#blipModal input, #blipModal select, #blipModal textarea {
+.input-group input, .input-group select, .input-group textarea {
     width: 100%;
-    padding: 8px;
-    background: #081017;
-    border: 1px solid #223745;
+    padding: 8px 10px;
+    background: #060c10;
+    border: 1px solid #1c2e3a;
     color: #fff;
     border-radius: 4px;
-    margin-top: 4px;
     font-size: 12px;
 }
 
-.modal-buttons {
+.btn-container {
     display: flex;
     gap: 10px;
     margin-top: 15px;
 }
 
-.modal-buttons button {
+.btn-container button {
     flex: 1;
     padding: 8px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 11px;
 }
 
-#saveBlipBtn { background: #2e7d32; color: #fff; }
-#cancelBlipBtn { background: #c62828; color: #fff; }
-
-/* Czarno-białe znaczniki na mapie w stylu GTA */
-.gta-marker-pin {
-    background: #101d26;
-    border: 1.5px solid #ffffff;
-    border-radius: 4px;
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ffffff;
-    font-size: 13px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.8);
-}
+#saveBlipBtn { background: #276b3c; color: #fff; }
+#cancelBlipBtn { background: #8c2525; color: #fff; }

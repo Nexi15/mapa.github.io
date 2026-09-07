@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     // HASŁO ADMINA - Możesz je zmienić poniżej
-    const ADMIN_PASSWORD = "lostmc123";
+    const ADMIN_PASSWORD = "boss";
     let isAdmin = false;
 
     // 1. Definicja pola mapy
@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 2. Inicjalizacja Leaflet
     const map = L.map('map', {
         crs: L.CRS.Simple,
-        minZoom: -1,
+        minZoom: -3,
         maxZoom: 3,
         zoomSnap: 0.5,
         maxBounds: mapBounds,

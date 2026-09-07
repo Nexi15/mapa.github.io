@@ -10,7 +10,9 @@ document.addEventListener("DOMContentLoaded", () => {
         npc: `<img src="icons/npc.png" alt="npc">`,
         corner: `<img src="icons/corner.png" alt="corner">`,
         taxidriver: `<img src="icons/taxidriver.png" alt="drug delivery">`,
-        flara: `<img src="icons/flara.png" alt="flara">`
+        flara: `<img src="icons/flara.png" alt="flara">`,
+        przemyt: `<img src="icons/przemyt.png" alt="przemyt">`,
+        G6: `<img src="icons/G6.png" alt="G6">`
     };
 
     const CATEGORIES = {

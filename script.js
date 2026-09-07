@@ -4,21 +4,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const FIREBASE_URL = "https://mapa-59c13-default-rtdb.europe-west1.firebasedatabase.app/blips";
 
-    // Awaryjne ikony SVG (wyświetlą się zawsze, jeśli zabraknie pliku PNG)
-    const FALLBACK_SVG = {
-        wrak: `<svg viewBox="0 0 24 24" fill="white" width="18" height="18"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM19 17H5v-4h14v4z"/></svg>`,
-        npc: `<svg viewBox="0 0 24 24" fill="white" width="18" height="18"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`,
-        corner: `<svg viewBox="0 0 24 24" fill="white" width="18" height="18"><path d="M12 2L9 9H2l6 4.5L5.5 21 12 16.5 18.5 21 16 13.5 22 9h-7z"/></svg>`,
-        taxidriver: `<svg viewBox="0 0 24 24" fill="white" width="18" height="18"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/></svg>`,
-        flara: `<svg viewBox="0 0 24 24" fill="white" width="18" height="18"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>`
+    // SVG Ikony (Wbudowane graficznie, zero problemów ze ścieżkami!)
+    const ICONS = {
+        wrak: `<svg viewBox="0 0 24 24" fill="#e74c3c"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM19 17H5v-4h14v4z"/></svg>`,
+        npc: `<svg viewBox="0 0 24 24" fill="#3498db"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`,
+        corner: `<svg viewBox="0 0 24 24" fill="#2ecc71"><path d="M12 2L9 9H2l6 4.5L5.5 21 12 16.5 18.5 21 16 13.5 22 9h-7z"/></svg>`,
+        taxidriver: `<svg viewBox="0 0 24 24" fill="#f1c40f"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/></svg>`,
+        flara: `<svg viewBox="0 0 24 24" fill="#e67e22"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>`
     };
 
     const CATEGORIES = {
-        wrak:       { name: "Wrak", sub: "Wrak pojazdu", icon: "wrak.png", visible: true, currentIndex: 0 },
-        npc:        { name: "NPC", sub: "NPC", icon: "npc.png", visible: true, currentIndex: 0 },
-        corner:     { name: "Corner", sub: "Corner", icon: "corner.png", visible: true, currentIndex: 0 },
-        taxidriver: { name: "Drug Delivery", sub: "Drug Delivery Sandy...", icon: "taxidriver.png", visible: true, currentIndex: 0 },
-        flara:      { name: "Flara", sub: "Flara", icon: "flara.png", visible: true, currentIndex: 0 }
+        wrak:       { name: "Wrak", sub: "Wrak pojazdu", visible: true, currentIndex: 0 },
+        npc:        { name: "NPC", sub: "NPC", visible: true, currentIndex: 0 },
+        corner:     { name: "Corner", sub: "Corner", visible: true, currentIndex: 0 },
+        taxidriver: { name: "Drug Delivery", sub: "Dostawa Sandy...", visible: true, currentIndex: 0 },
+        flara:      { name: "Flara", sub: "Flara", visible: true, currentIndex: 0 }
     };
 
     const mapBounds = [[0, 0], [8192, 8192]];
@@ -36,7 +36,6 @@ document.addEventListener("DOMContentLoaded", () => {
     L.imageOverlay('map.png', mapBounds).addTo(map);
     map.fitBounds(mapBounds);
 
-    // Pobieranie elementów interfejsu
     const categoriesContainer = document.getElementById('categoriesContainer');
     const blipListContainer = document.getElementById('sidebarBlipsList');
     const adminLoginBtn = document.getElementById('adminLoginBtn');
@@ -54,15 +53,13 @@ document.addEventListener("DOMContentLoaded", () => {
     let editingBlipData = null;
     let allBlips = [];
 
-    // Generowanie odpornej na błędy ikony
     function createGtaMarkerIcon(categoryKey) {
         const catKey = CATEGORIES[categoryKey] ? categoryKey : 'wrak';
-        const cat = CATEGORIES[catKey];
-        const svgFallback = FALLBACK_SVG[catKey] || FALLBACK_SVG.wrak;
+        const svgContent = ICONS[catKey] || ICONS.wrak;
 
         return L.divIcon({
             className: 'clean-gta-blip',
-            html: `<img src="${cat.icon}" alt="blip" onerror="this.outerHTML='${svgFallback.replace(/'/g, "\\'")}';" />`,
+            html: svgContent,
             iconSize: [24, 24],
             iconAnchor: [12, 12]
         });
@@ -120,10 +117,10 @@ document.addEventListener("DOMContentLoaded", () => {
         loadBlipsFromFirebase();
     }
 
-    // KLIKNIĘCIE W MAPĘ - POWIĄZANIE
+    // Kliknięcie w mapę (Dodawanie blipa)
     map.on('click', (e) => {
         if (!isAdmin) {
-            alert("Najpierw zaloguj się jako Admin!");
+            alert("Zaloguj się jako Admin, aby dodawać punkty!");
             return;
         }
         clickedCoords = [e.latlng.lat, e.latlng.lng];
@@ -159,10 +156,10 @@ document.addEventListener("DOMContentLoaded", () => {
         editingBlipData = null;
     }
 
-    if(cancelBtn) cancelBtn.addEventListener('click', closeModal);
-    if(modalOverlay) modalOverlay.addEventListener('click', closeModal);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+    if (modalOverlay) modalOverlay.addEventListener('click', closeModal);
 
-    if(saveBtn) {
+    if (saveBtn) {
         saveBtn.addEventListener('click', () => {
             const title = blipTitleInput.value.trim();
             const category = blipCategorySelect.value;
@@ -189,14 +186,14 @@ document.addEventListener("DOMContentLoaded", () => {
             const catBlips = allBlips.filter(b => b.category === key);
             const totalCount = catBlips.length;
             const displayIndex = totalCount > 0 ? (cat.currentIndex % totalCount) + 1 : 0;
-            const svgFallback = FALLBACK_SVG[key] || FALLBACK_SVG.wrak;
+            const iconSvg = ICONS[key] || ICONS.wrak;
 
             const row = document.createElement('div');
             row.className = `category-row ${cat.visible ? 'active' : 'inactive'}`;
             
             row.innerHTML = `
                 <div class="category-info">
-                    <img src="${cat.icon}" class="category-icon-img" alt="${cat.name}" onerror="this.outerHTML='${svgFallback.replace(/'/g, "\\'")}';">
+                    <div class="category-icon-box">${iconSvg}</div>
                     <div class="category-name-group">
                         <span class="category-title">${cat.name}</span>
                         <span class="category-subtitle">${cat.sub}</span>
@@ -309,7 +306,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Obsługa Przycisku Admina
     if (adminLoginBtn) {
         adminLoginBtn.addEventListener('click', () => {
             if (isAdmin) {

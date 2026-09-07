@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // 3. Podpięcie Twojego pliku graficznego z repozytorium
-    const image = L.imageOverlay('map.jpg', mapBounds).addTo(map);
+    const image = L.imageOverlay('map.png', mapBounds).addTo(map);
     map.fitBounds(mapBounds); // Dopasowanie widoku do całej grafiki
 
     // 4. Elementy interfejsu

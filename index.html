@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shadows | Mapa blipów</title>
+    <title>Shadows | Mapa Los Santos</title>
         
-    <!-- Biblioteka Leaflet i MarkerCluster -->
+    <!-- Biblioteka Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
@@ -15,47 +15,40 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
         
-    <!-- Zewnętrzny plik CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Kontener mapy -->
     <div id="map"></div>
 
-    <!-- Znak wodny zabezpieczający przed kradzieżą screenów -->
+    <!-- Znak wodny -->
     <img id="watermark" src="https://i.imgur.com/CeDdq47.jpeg" alt="Shadows Watermark">
 
-    <!-- Prawy Panel Boczny (Lista Blipów + Wyszukiwarka) -->
+    <!-- Panel Boczny -->
     <div id="sidebarPanel">
         <div class="sidebar-header">
-            <!-- Stylowy przycisk aktywnego NPC -->
             <button id="drugDeliveryWidget" class="npc-btn">
                 <span>📍</span> Znajdź dostawcę
             </button>
 
             <h3>Lista Punktów</h3>
             <input type="text" id="blipSearchInput" placeholder="Szukaj blipa..." autocomplete="off">
-            
-            <!-- Przycisk i kontener filtrów -->
             <button id="toggleFiltersBtn" class="filter-btn">Filtruj widoczne blipy</button>
         </div>
 
-        <div id="filtersContainer" class="filters-container">
-            <!-- Dynamiczne checkboxy generowane przez JS -->
-        </div>
+        <div id="filtersContainer" class="filters-container"></div>
 
         <ul class="sidebar-list" id="sidebarBlipsList">
-            <!-- Tutaj dynamicznie wpadają punkty -->
+            <!-- Blipy dodawane dynamicznie -->
         </ul>
     </div>
 
-    <!-- Stopka na dole ekranu -->
+    <!-- Stopka -->
     <div id="footer">
         &copy; 2026 (Live in) Shadows | Realizacja: <span>shenjzs</span>
     </div>
 
-    <!-- Modal do dodawania nowego punktu -->
+    <!-- Modal -->
     <div id="modalOverlay"></div>
     <div id="blipModal">
         <h2>Nowy punkt</h2>
@@ -74,10 +67,7 @@
         </div>
     </div>
 
-    <!-- Pojemnik na powiadomienia Toast -->
-    <div id="toastContainer"></div>
-
-    <!-- Skrypty JS -->
+    <!-- Skrypty -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
     <script src="script.js"></script>

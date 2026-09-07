@@ -1,0 +1,226 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #0f0f11;
+    color: #e0e0e0;
+}
+
+/* Mapa Leaflet */
+#map {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Znak wodny */
+#watermark {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: 150px;
+    opacity: 0.25;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+/* Panel Boczny */
+#sidebarPanel {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 320px;
+    max-height: calc(100% - 70px);
+    background: rgba(18, 18, 22, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(176, 141, 87, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.sidebar-header h3 {
+    font-family: 'Cinzel', serif;
+    color: #b08d57;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.npc-btn {
+    display: none; /* Sterowane przez JS */
+    width: 100%;
+    background: rgba(176, 141, 87, 0.15);
+    border: 1px solid rgba(176, 141, 87, 0.4);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 20px;
+    color: #b08d57;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 4px 15px rgba(0,0,0,0.3);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.npc-btn:hover {
+    background: rgba(176, 141, 87, 0.25);
+    color: #fff;
+    box-shadow: 0 0 15px rgba(176, 141, 87, 0.4);
+}
+
+#blipSearchInput {
+    width: 100%;
+    padding: 10px 14px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: #fff;
+    font-size: 13px;
+    margin-bottom: 10px;
+    outline: none;
+}
+
+#blipSearchInput:focus {
+    border-color: #b08d57;
+}
+
+.filter-btn {
+    width: 100%;
+    padding: 8px;
+    background: transparent;
+    border: 1px solid rgba(176, 141, 87, 0.3);
+    color: #b08d57;
+    font-size: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-bottom: 10px;
+}
+
+.filter-btn:hover {
+    background: rgba(176, 141, 87, 0.1);
+}
+
+.filters-container {
+    display: none;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.sidebar-list {
+    list-style: none;
+    overflow-y: auto;
+    max-height: 400px;
+}
+
+.sidebar-list li {
+    padding: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.sidebar-list li:hover {
+    background: rgba(176, 141, 87, 0.1);
+    color: #b08d57;
+}
+
+/* Stopka */
+#footer {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    z-index: 1000;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+#footer span {
+    color: #b08d57;
+    font-weight: 600;
+}
+
+/* Modal i Nakładka */
+#modalOverlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+}
+
+#blipModal {
+    display: none;
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+    background: #151518;
+    border: 1px solid #b08d57;
+    border-radius: 10px;
+    padding: 25px;
+    z-index: 2001;
+    box-shadow: 0 0 20px rgba(0,0,0,0.8);
+}
+
+#blipModal h2 {
+    font-family: 'Cinzel', serif;
+    color: #b08d57;
+    margin-bottom: 15px;
+}
+
+.input-group input, .input-group textarea {
+    width: 100%;
+    background: #0a0a0c;
+    border: 1px solid #333;
+    color: #fff;
+    padding: 10px;
+    margin-bottom: 12px;
+    border-radius: 5px;
+    outline: none;
+}
+
+.btn-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-container button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#cancelBlipBtn { background: #333; color: #fff; }
+#saveBlipBtn { background: #b08d57; color: #000; font-weight: bold; }
+
+/* Powiadomienia Toast */
+#toastContainer {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 3000;
+}

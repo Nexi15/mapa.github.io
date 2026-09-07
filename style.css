@@ -296,3 +296,24 @@ body, html {
 
 #saveBlipBtn { background: #276b3c; color: #fff; }
 #cancelBlipBtn { background: #8c2525; color: #fff; }
+
+/* Wymuszenie widoczności obrazków na mapie i w panelu */
+.category-icon-img {
+    width: 24px !important;
+    height: 24px !important;
+    object-fit: contain;
+    display: inline-block;
+}
+
+.clean-gta-blip img {
+    width: 24px !important;
+    height: 24px !important;
+    object-fit: contain;
+    display: block;
+}
+
+.clean-gta-blip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

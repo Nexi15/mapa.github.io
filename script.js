@@ -4,13 +4,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const FIREBASE_URL = "https://mapa-59c13-default-rtdb.europe-west1.firebasedatabase.app/blips";
 
-    // Lokalne ikony blipów z folderu projektu
+    // Ikony z podfolderu icons/
     const ICONS = {
-        wrak: `<img src="wrak.png" alt="wrak">`,
-        npc: `<img src="npc.png" alt="npc">`,
-        corner: `<img src="corner.png" alt="corner">`,
-        taxidriver: `<img src="taxidriver.png" alt="drug delivery">`,
-        flara: `<img src="flara.png" alt="flara">`
+        wrak: `<img src="icons/wrak.png" alt="wrak">`,
+        npc: `<img src="icons/npc.png" alt="npc">`,
+        corner: `<img src="icons/corner.png" alt="corner">`,
+        taxidriver: `<img src="icons/taxidriver.png" alt="drug delivery">`,
+        flara: `<img src="icons/flara.png" alt="flara">`
     };
 
     const CATEGORIES = {

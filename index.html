@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Lost MC | Mapa Los Santos</title>
         
-    <!-- Biblioteka Leaflet i MarkerCluster -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
         
-    <!-- Czcionki Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
@@ -21,14 +19,13 @@
 
     <div id="map"></div>
 
-    <!-- Znak wodny (poprawiony bezpośredni link) -->
     <img id="watermark" src="https://i.imgur.com/CeDdq47.jpeg" alt="The Lost MC Watermark">
 
     <!-- Panel Boczny -->
     <div id="sidebarPanel">
         <div class="sidebar-header">
-            <button id="drugDeliveryWidget" class="npc-btn">
-                <span>📍</span> Znajdź dostawcę
+            <button id="adminLoginBtn" class="npc-btn">
+                🔑 Logowanie Admina
             </button>
 
             <h3>Lista Punktów</h3>
@@ -48,10 +45,10 @@
         &copy; 2026 The Lost MC | Realizacja: <span>Nexi15</span>
     </div>
 
-    <!-- Modal -->
+    <!-- Modal Dodawania / Edycji -->
     <div id="modalOverlay"></div>
     <div id="blipModal">
-        <h2>Nowy punkt</h2>
+        <h2 id="modalTitle">Nowy punkt</h2>
                 
         <div class="input-group">
             <input type="text" id="blipTitle" placeholder="NAZWA BLIPA" autocomplete="off">

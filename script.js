@@ -4,13 +4,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const FIREBASE_URL = "https://mapa-59c13-default-rtdb.europe-west1.firebasedatabase.app/blips";
 
-    // Prawdziwe ikony blipów GTA V z serwera GitHub
+    // Lokalne ikony blipów z folderu projektu
     const ICONS = {
-        wrak: `<img src="https://raw.githubusercontent.com/mkafrin/GTA-V-Blips-Radar-Icons/master/png/Blip_326.png" alt="wrak">`,
-        npc: `<img src="https://raw.githubusercontent.com/mkafrin/GTA-V-Blips-Radar-Icons/master/png/Blip_280.png" alt="npc">`,
-        corner: `<img src="https://raw.githubusercontent.com/mkafrin/GTA-V-Blips-Radar-Icons/master/png/Blip_140.png" alt="corner">`,
-        taxidriver: `<img src="https://raw.githubusercontent.com/mkafrin/GTA-V-Blips-Radar-Icons/master/png/Blip_198.png" alt="drug delivery">`,
-        flara: `<img src="https://raw.githubusercontent.com/mkafrin/GTA-V-Blips-Radar-Icons/master/png/Blip_436.png" alt="flara">`
+        wrak: `<img src="wrak.png" alt="wrak">`,
+        npc: `<img src="npc.png" alt="npc">`,
+        corner: `<img src="corner.png" alt="corner">`,
+        taxidriver: `<img src="taxidriver.png" alt="drug delivery">`,
+        flara: `<img src="flara.png" alt="flara">`
     };
 
     const CATEGORIES = {

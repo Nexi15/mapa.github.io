@@ -1,69 +1,100 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Płaski układ współrzędnych dla mapy GTA V
-    const mapExtent = [0.00000000, -8192.00000000, 8192.00000000, 0.00000000];
-    const mapMinZoom = 2;
-    const mapMaxZoom = 5;
-    const mapMaxResolution = 1.00000000;
-    const mapMinResolution = Math.pow(2, mapMaxZoom) * mapMaxResolution;
-    
-    const crs = L.CRS.Simple;
-    crs.transformation = new L.Transformation(1, -mapExtent[1], -1, mapExtent[2]);
-    crs.scale = function(zoom) {
-        return Math.pow(2, zoom) / mapMinResolution;
-    };
-    crs.zoom = function(scale) {
-        return Math.log(scale * mapMinResolution) / Math.LN2;
-    };
+    // 1. Wymiary Twojej grafiki mapy (1024x1024 pikseli)
+    const mapBounds = [[0, 0], [1024, 1024]];
 
-    // 2. Inicjalizacja Mapy
+    // 2. Inicjalizacja prostej mapy graficznej
     const map = L.map('map', {
-        crs: crs,
-        minZoom: mapMinZoom,
-        maxZoom: mapMaxZoom,
+        crs: L.CRS.Simple,
+        minZoom: -1,
+        maxZoom: 3,
+        zoomSnap: 0.5,
+        maxBounds: mapBounds,
+        maxBoundsViscosity: 0.8,
         attributionControl: false
     });
 
-    // 3. Wczytanie działających kafelków mapy GTA V (Atlas)
-    L.tileLayer('https://map.bramstein.com/tiles/atlas/{z}/{x}/{y}.png', {
-        minZoom: mapMinZoom,
-        maxZoom: mapMaxZoom,
-        noWrap: true,
-        tms: true
-    }).addTo(map);
+    // 3. Podpięcie Twojego pliku graficznego z repozytorium
+    const image = L.imageOverlay('map.jpg', mapBounds).addTo(map);
+    map.fitBounds(mapBounds); // Dopasowanie widoku do całej grafiki
 
-    // Wyśrodkowanie na Los Santos
-    map.setView([-4000, 4000], 3);
-
-    // 4. Blipy
-    const blips = [
-        { name: "Siedziba Główna", coords: [-5500, 3800], desc: "Baza operacyjna" },
-        { name: "Lotnisko Los Santos", coords: [-7000, 3000], desc: "Pas startowy" },
-        { name: "Sandy Shores", coords: [-2000, 4500], desc: "Punkt zborny na pustyni" }
-    ];
-
+    // 4. Elementy interfejsu
+    const blipModal = document.getElementById('blipModal');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const cancelBtn = document.getElementById('cancelBlipBtn');
+    const saveBtn = document.getElementById('saveBlipBtn');
+    const blipTitleInput = document.getElementById('blipTitle');
+    const blipDescInput = document.getElementById('blipDesc');
     const blipListContainer = document.getElementById('sidebarBlipsList');
 
-    blips.forEach(blip => {
-        const marker = L.marker(blip.coords).addTo(map);
-        marker.bindPopup(`<b>${blip.name}</b><br>${blip.desc}`);
+    let clickedCoords = null;
 
+    // 5. Funkcja dodawania blipa
+    function addBlip(name, desc, coords) {
+        // Dodanie znacznika do mapy
+        const marker = L.marker(coords).addTo(map);
+        marker.bindPopup(`<b>${name}</b><br>${desc || 'Brak opisu'}`);
+
+        // Dodanie pozycji na liście w panelu bocznym
         const li = document.createElement('li');
-        li.textContent = `📍 ${blip.name}`;
+        li.textContent = `📍 ${name}`;
         li.addEventListener('click', () => {
-            map.flyTo(blip.coords, 4);
+            map.flyTo(coords, 2);
             marker.openPopup();
         });
         blipListContainer.appendChild(li);
+    }
+
+    // Domyślny blip startowy na środku mapy
+    addBlip("Siedziba Główna", "Baza operacyjna", [512, 512]);
+
+    // 6. Dodawanie blipa po kliknięciu w dowolne miejsce na mapie
+    map.on('click', (e) => {
+        clickedCoords = [e.latlng.lat, e.latlng.lng];
+        
+        blipTitleInput.value = '';
+        blipDescInput.value = '';
+
+        modalOverlay.style.display = 'block';
+        blipModal.style.display = 'block';
+        blipTitleInput.focus();
     });
 
-    // Wyszukiwarka
-    const searchInput = document.getElementById('blipSearchInput');
-    searchInput.addEventListener('input', (e) => {
-        const value = e.target.value.toLowerCase();
-        const items = blipListContainer.querySelectorAll('li');
-        items.forEach(item => {
-            const text = item.textContent.toLowerCase();
-            item.style.display = text.includes(value) ? 'block' : 'none';
-        });
+    // 7. Zamykanie okna formularza
+    function closeModal() {
+        modalOverlay.style.display = 'none';
+        blipModal.style.display = 'none';
+        clickedCoords = null;
+    }
+
+    cancelBtn.addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', closeModal);
+
+    // 8. Zapisywanie blipa
+    saveBtn.addEventListener('click', () => {
+        const title = blipTitleInput.value.trim();
+        const desc = blipDescInput.value.trim();
+
+        if (!title) {
+            alert("Wpisz nazwę punktu!");
+            return;
+        }
+
+        if (clickedCoords) {
+            addBlip(title, desc, clickedCoords);
+            closeModal();
+        }
     });
+
+    // 9. Wyszukiwarka
+    const searchInput = document.getElementById('blipSearchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const value = e.target.value.toLowerCase();
+            const items = blipListContainer.querySelectorAll('li');
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(value) ? 'block' : 'none';
+            });
+        });
+    }
 });

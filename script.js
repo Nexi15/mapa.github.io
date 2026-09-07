@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     // 1. Definicja pola mapy (dla pliku map.png)
-    const mapBounds = [[0, 0], [1024, 1024]];
+    const mapBounds = [[0, 0], [8192, 8192]];
 
     // 2. Inicjalizacja Leaflet
     const map = L.map('map', {

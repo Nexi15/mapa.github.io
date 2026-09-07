@@ -1,19 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // HASŁO ADMINA - Możesz je zmienić poniżej
+    // HASŁO ADMINA - Ustawione na "boss"
     const ADMIN_PASSWORD = "boss";
     let isAdmin = false;
 
-    // 1. Definicja pola mapy
+    // 1. Definicja pola mapy (8192 x 8192)
     const mapBounds = [[0, 0], [8192, 8192]];
 
-    // 2. Inicjalizacja Leaflet
+    // 2. Inicjalizacja Leaflet (umożliwia dalsze oddalanie)
     const map = L.map('map', {
         crs: L.CRS.Simple,
-        minZoom: -3,
-        maxZoom: 3,
-        zoomSnap: 0.5,
+        minZoom: -3,            // Pozwala bardzo mocno oddalić mapę
+        maxZoom: 3,             // Maksymalne przybliżenie
+        zoomSnap: 0.25,         // Płynniejsze przybliżanie/oddalanie
         maxBounds: mapBounds,
-        maxBoundsViscosity: 0.8,
+        maxBoundsViscosity: 0.2,// Elastyczne krawędzie ułatwiające oddalanie
         attributionControl: false
     });
 
@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
             nameSpan.textContent = `📍 ${blip.name}`;
             nameSpan.style.cursor = 'pointer';
             nameSpan.addEventListener('click', () => {
-                map.flyTo(blip.coords, 2);
+                map.flyTo(blip.coords, 0);
                 blip.marker.openPopup();
             });
 
@@ -127,8 +127,8 @@ document.addEventListener("DOMContentLoaded", () => {
         renderBlipList();
     }
 
-    // Domyślny blip na start
-    createOrUpdateBlip("Siedziba Główna", "Baza operacyjna The Lost MC", [512, 512]);
+    // Domyślny blip na start (dostosowany do mapy 8192x8192)
+    createOrUpdateBlip("Siedziba Główna", "Baza operacyjna The Lost MC", [4096, 4096]);
 
     // 7. Otwieranie Modala dla NOWEGO punktu
     map.on('click', (e) => {

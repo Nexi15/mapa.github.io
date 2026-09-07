@@ -17,8 +17,10 @@ document.addEventListener("DOMContentLoaded", () => {
         wrak:       { name: "Wrak", sub: "Wrak pojazdu", visible: true, currentIndex: 0 },
         npc:        { name: "NPC", sub: "NPC", visible: true, currentIndex: 0 },
         corner:     { name: "Corner", sub: "Corner", visible: true, currentIndex: 0 },
-        taxidriver: { name: "Drug Delivery", sub: "Dostawa Sandy...", visible: true, currentIndex: 0 },
+        taxidriver: { name: "Drug Delivery", sub: "Drug Delivery", visible: true, currentIndex: 0 },
         flara:      { name: "Flara", sub: "Flara", visible: true, currentIndex: 0 }
+        przemyt:    { name: "przemyt", sub: "Przemyt", visible: true, currentIndex: 0 }
+        G6:         { name: "G6", sub: "Gruppe 6", visible: true, currentIndex: 0 }
     };
 
     const mapBounds = [[0, 0], [8192, 8192]];

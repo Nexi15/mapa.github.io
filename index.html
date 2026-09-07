@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
         
+    <!-- FontAwesome (dla ikonek blipów i kategorii) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
@@ -28,12 +31,13 @@
                 🔑 Logowanie Admina
             </button>
 
-            <h3>Lista Punktów</h3>
+            <h3>LISTA PUNKTÓW</h3>
             <input type="text" id="blipSearchInput" placeholder="Szukaj blipa..." autocomplete="off">
-            <button id="toggleFiltersBtn" class="filter-btn">Filtruj widoczne blipy</button>
+            <button id="toggleFiltersBtn" class="filter-btn">FILTRUJ WIDOCZNE BLIPY</button>
         </div>
 
-        <div id="filtersContainer" class="filters-container"></div>
+        <!-- Kontener na dynamiczne kafelki kategorii ze strzałkami < 0/1 > -->
+        <div id="categoriesContainer" class="categories-list"></div>
 
         <ul class="sidebar-list" id="sidebarBlipsList">
             <!-- Blipy dodawane dynamicznie -->
@@ -52,6 +56,21 @@
                 
         <div class="input-group">
             <input type="text" id="blipTitle" placeholder="NAZWA BLIPA" autocomplete="off">
+        </div>
+
+        <div class="input-group">
+            <select id="blipCategory">
+                <option value="flara">📦 Flara</option>
+                <option value="npc">🧍 NPC</option>
+                <option value="corner">🌿 Corner</option>
+                <option value="stol">🛠️ Stół</option>
+                <option value="grzyby">🍄 Grzyby</option>
+                <option value="drug">🚗 Drug Delivery</option>
+                <option value="napad">💲 Napad</option>
+                <option value="weed">🏪 Weedshop</option>
+                <option value="kopalnia">⛏️ Kopalnia</option>
+                <option value="rabunek">🛒 Rabunek kasetki</option>
+            </select>
         </div>
                 
         <div class="input-group">

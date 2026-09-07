@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Wymiary Twojej grafiki mapy (1024x1024 pikseli)
-    const mapBounds = [[0, 0], [8192, 8192]];
+    // 1. Definicja pola mapy (dla pliku map.png)
+    const mapBounds = [[0, 0], [1024, 1024]];
 
-    // 2. Inicjalizacja prostej mapy graficznej
+    // 2. Inicjalizacja Leaflet
     const map = L.map('map', {
         crs: L.CRS.Simple,
         minZoom: -1,
@@ -13,11 +13,11 @@ document.addEventListener("DOMContentLoaded", () => {
         attributionControl: false
     });
 
-    // 3. Podpięcie Twojego pliku graficznego z repozytorium
-    const image = L.imageOverlay('map.png', mapBounds).addTo(map);
-    map.fitBounds(mapBounds); // Dopasowanie widoku do całej grafiki
+    // 3. Wczytanie obrazka map.png z repozytorium
+    L.imageOverlay('map.png', mapBounds).addTo(map);
+    map.fitBounds(mapBounds);
 
-    // 4. Elementy interfejsu
+    // 4. Elementy UI
     const blipModal = document.getElementById('blipModal');
     const modalOverlay = document.getElementById('modalOverlay');
     const cancelBtn = document.getElementById('cancelBlipBtn');
@@ -28,13 +28,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let clickedCoords = null;
 
-    // 5. Funkcja dodawania blipa
+    // 5. Dodawanie punktu
     function addBlip(name, desc, coords) {
-        // Dodanie znacznika do mapy
         const marker = L.marker(coords).addTo(map);
         marker.bindPopup(`<b>${name}</b><br>${desc || 'Brak opisu'}`);
 
-        // Dodanie pozycji na liście w panelu bocznym
         const li = document.createElement('li');
         li.textContent = `📍 ${name}`;
         li.addEventListener('click', () => {
@@ -44,10 +42,10 @@ document.addEventListener("DOMContentLoaded", () => {
         blipListContainer.appendChild(li);
     }
 
-    // Domyślny blip startowy na środku mapy
-    addBlip("Siedziba Główna", "Baza operacyjna", [512, 512]);
+    // Punkt początkowy
+    addBlip("Siedziba Główna", "Baza operacyjna The Lost MC", [512, 512]);
 
-    // 6. Dodawanie blipa po kliknięciu w dowolne miejsce na mapie
+    // 6. Otwieranie modala po kliknięciu na mapę
     map.on('click', (e) => {
         clickedCoords = [e.latlng.lat, e.latlng.lng];
         
@@ -59,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
         blipTitleInput.focus();
     });
 
-    // 7. Zamykanie okna formularza
+    // 7. Zamykanie okna
     function closeModal() {
         modalOverlay.style.display = 'none';
         blipModal.style.display = 'none';
@@ -69,13 +67,13 @@ document.addEventListener("DOMContentLoaded", () => {
     cancelBtn.addEventListener('click', closeModal);
     modalOverlay.addEventListener('click', closeModal);
 
-    // 8. Zapisywanie blipa
+    // 8. Zapis punktu
     saveBtn.addEventListener('click', () => {
         const title = blipTitleInput.value.trim();
         const desc = blipDescInput.value.trim();
 
         if (!title) {
-            alert("Wpisz nazwę punktu!");
+            alert("Podaj nazwę blipa!");
             return;
         }
 
@@ -85,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // 9. Wyszukiwarka
+    // 9. Szukajka
     const searchInput = document.getElementById('blipSearchInput');
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {

@@ -1,19 +1,22 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // HASŁO ADMINA - Ustawione na "boss"
+    // HASŁO ADMINA
     const ADMIN_PASSWORD = "boss";
     let isAdmin = false;
+
+    // ADRES TWOJEJ BAZY FIREBASE
+    const FIREBASE_URL = "https://mapa-59c13-default-rtdb.europe-west1.firebasedatabase.app/blips";
 
     // 1. Definicja pola mapy (8192 x 8192)
     const mapBounds = [[0, 0], [8192, 8192]];
 
-    // 2. Inicjalizacja Leaflet (umożliwia dalsze oddalanie)
+    // 2. Inicjalizacja Leaflet
     const map = L.map('map', {
         crs: L.CRS.Simple,
-        minZoom: -3,            // Pozwala bardzo mocno oddalić mapę
-        maxZoom: 3,             // Maksymalne przybliżenie
-        zoomSnap: 0.25,         // Płynniejsze przybliżanie/oddalanie
+        minZoom: -3,
+        maxZoom: 3,
+        zoomSnap: 0.25,
         maxBounds: mapBounds,
-        maxBoundsViscosity: 0.2,// Elastyczne krawędzie ułatwiające oddalanie
+        maxBoundsViscosity: 0.2,
         attributionControl: false
     });
 
@@ -32,29 +35,67 @@ document.addEventListener("DOMContentLoaded", () => {
     const modalTitle = document.getElementById('modalTitle');
 
     let clickedCoords = null;
-    let editingBlipData = null; 
+    let editingBlipData = null;
     let allBlips = [];
 
-    // 4. ZAPISYWANIE I WCZYTYWANIE Z LOCALSTORAGE
-    function saveBlipsToStorage() {
-        const blipsToSave = allBlips.map(b => ({
-            name: b.name,
-            desc: b.desc,
-            coords: b.coords
-        }));
-        localStorage.setItem('lostmc_blips', JSON.stringify(blipsToSave));
+    // 4. OBSŁUGA BAZY DANYCH FIREBASE (REST API)
+    async function loadBlipsFromFirebase() {
+        try {
+            const res = await fetch(`${FIREBASE_URL}.json`);
+            const data = await res.json();
+            
+            // Wyszczyszczenie starych markerów z mapy
+            allBlips.forEach(b => map.removeLayer(b.marker));
+            allBlips = [];
+
+            if (data) {
+                Object.keys(data).forEach(id => {
+                    const item = data[id];
+                    const marker = L.marker(item.coords).addTo(map);
+                    marker.bindPopup(`<b>${item.name}</b><br>${item.desc || 'Brak opisu'}`);
+                    allBlips.push({ id, name: item.name, desc: item.desc, coords: item.coords, marker });
+                });
+            }
+            renderBlipList();
+        } catch (err) {
+            console.error("Błąd podczas wczytywania danych z Firebase:", err);
+        }
     }
 
-    function loadBlipsFromStorage() {
-        const savedData = localStorage.getItem('lostmc_blips');
-        if (savedData) {
-            const parsedBlips = JSON.parse(savedData);
-            parsedBlips.forEach(b => {
-                createOrUpdateBlip(b.name, b.desc, b.coords, null, false);
+    async function saveBlipToFirebase(name, desc, coords) {
+        try {
+            await fetch(`${FIREBASE_URL}.json`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, desc, coords })
             });
-        } else {
-            // Jeśli baza jest pusta, utwórz domyślny punkt początkowy
-            createOrUpdateBlip("Siedziba Główna", "Baza operacyjna The Lost MC", [4096, 4096], null, true);
+            loadBlipsFromFirebase();
+        } catch (err) {
+            console.error("Błąd zapisu w Firebase:", err);
+        }
+    }
+
+    async function updateBlipInFirebase(id, name, desc) {
+        try {
+            await fetch(`${FIREBASE_URL}/${id}.json`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, desc })
+            });
+            loadBlipsFromFirebase();
+        } catch (err) {
+            console.error("Błąd edycji w Firebase:", err);
+        }
+    }
+
+    async function deleteBlipFromFirebase(id) {
+        try {
+            await fetch(`${FIREBASE_URL}/${id}.json`, {
+                method: 'DELETE'
+            });
+            loadBlipsFromFirebase();
+        } catch (err) {
+            console.error("Błąd usuwania z Firebase:", err);
         }
     }
 
@@ -74,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
             isAdmin = true;
             adminLoginBtn.textContent = "🔓 Zalogowano (Admin)";
             adminLoginBtn.style.borderColor = "#4CAF50";
-            alert("Zalogowano pomyślnie jako Admin! Masz dostęp do edycji i usuwania punktów.");
+            alert("Zalogowano pomyślnie jako Admin!");
             renderBlipList();
         } else if (password !== null) {
             alert("Nieprawidłowe hasło!");
@@ -85,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function renderBlipList() {
         blipListContainer.innerHTML = '';
 
-        allBlips.forEach((blip, index) => {
+        allBlips.forEach((blip) => {
             const li = document.createElement('li');
             li.style.display = 'flex';
             li.style.justify = 'space-between';
@@ -101,7 +142,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             li.appendChild(nameSpan);
 
-            // Jeśli jest Adminem — dodaj przyciski Edytuj i Usuń
             if (isAdmin) {
                 const actionContainer = document.createElement('div');
                 
@@ -111,7 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 editBtn.style.cssText = 'background:none; border:none; cursor:pointer; margin-right:5px;';
                 editBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    openEditModal(blip, index);
+                    openEditModal(blip);
                 });
 
                 const deleteBtn = document.createElement('button');
@@ -121,10 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 deleteBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     if (confirm(`Czy na pewno chcesz usunąć punkt "${blip.name}"?`)) {
-                        map.removeLayer(blip.marker);
-                        allBlips.splice(index, 1);
-                        saveBlipsToStorage();
-                        renderBlipList();
+                        deleteBlipFromFirebase(blip.id);
                     }
                 });
 
@@ -137,28 +174,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 7. Funkcja dodawania/aktualizacji blipa
-    function createOrUpdateBlip(name, desc, coords, markerToUpdate = null, shouldSave = true) {
-        if (markerToUpdate) {
-            // Aktualizacja istniejącego
-            markerToUpdate.bindPopup(`<b>${name}</b><br>${desc || 'Brak opisu'}`);
-        } else {
-            // Tworzenie nowego
-            const marker = L.marker(coords).addTo(map);
-            marker.bindPopup(`<b>${name}</b><br>${desc || 'Brak opisu'}`);
-            allBlips.push({ name, desc, coords, marker });
-        }
+    // Pierwsze wczytanie danych z chmury
+    loadBlipsFromFirebase();
 
-        if (shouldSave) {
-            saveBlipsToStorage();
-        }
-        renderBlipList();
-    }
-
-    // Wczytaj zapisane blipy przy uruchomieniu strony
-    loadBlipsFromStorage();
-
-    // 8. Otwieranie Modala dla NOWEGO punktu
+    // 7. Otwieranie Modala dla NOWEGO punktu
     map.on('click', (e) => {
         clickedCoords = [e.latlng.lat, e.latlng.lng];
         editingBlipData = null;
@@ -172,9 +191,9 @@ document.addEventListener("DOMContentLoaded", () => {
         blipTitleInput.focus();
     });
 
-    // 9. Otwieranie Modala dla EDYCJI punktu
-    function openEditModal(blip, index) {
-        editingBlipData = { blip, index };
+    // 8. Otwieranie Modala dla EDYCJI punktu
+    function openEditModal(blip) {
+        editingBlipData = blip;
 
         modalTitle.textContent = "Edytuj punkt";
         blipTitleInput.value = blip.name;
@@ -185,7 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
         blipTitleInput.focus();
     }
 
-    // 10. Zamykanie okna
+    // 9. Zamykanie okna
     function closeModal() {
         modalOverlay.style.display = 'none';
         blipModal.style.display = 'none';
@@ -196,7 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
     cancelBtn.addEventListener('click', closeModal);
     modalOverlay.addEventListener('click', closeModal);
 
-    // 11. Zapisywanie (Nowy lub Edycja)
+    // 10. Zapisywanie (Nowy lub Edycja)
     saveBtn.addEventListener('click', () => {
         const title = blipTitleInput.value.trim();
         const desc = blipDescInput.value.trim();
@@ -207,20 +226,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (editingBlipData) {
-            // Edycja istniejącego blipa
-            const { blip } = editingBlipData;
-            blip.name = title;
-            blip.desc = desc;
-            createOrUpdateBlip(title, desc, blip.coords, blip.marker, true);
+            updateBlipInFirebase(editingBlipData.id, title, desc);
         } else if (clickedCoords) {
-            // Dodawanie nowego blipa
-            createOrUpdateBlip(title, desc, clickedCoords, null, true);
+            saveBlipToFirebase(title, desc, clickedCoords);
         }
 
         closeModal();
     });
 
-    // 12. Wyszukiwarka
+    // 11. Wyszukiwarka
     const searchInput = document.getElementById('blipSearchInput');
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {

@@ -278,5 +278,10 @@ body, html {
     font-size: 11px;
 }
 
+#map {
+    will-change: transform;
+    transform: translateZ(0);
+}
+
 #saveBlipBtn { background: #276b3c; color: #fff; }
 #cancelBlipBtn { background: #8c2525; color: #fff; }
